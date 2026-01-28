@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Offline Game</title>
+
+<style>
+body {
+    text-align: center;
+    font-family: Arial;
+}
+
+#game {
+    width: 600px;
+    height: 200px;
+    border: 2px solid black;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+}
+
+#dino {
+    width: 40px;
+    height: 40px;
+    background: black;
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+}
+
+.jump {
+    animation: jump 0.5s;
+}
+
+@keyframes jump {
+    0% { bottom: 0; }
+    50% { bottom: 90px; }
+    100% { bottom: 0; }
+}
+
+#cactus {
+    width: 20px;
+    height: 40px;
+    background: green;
+    position: absolute;
+    bottom: 0;
+    left: 600px;
+}
+
+#score {
+    margin: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Website Offline</h2>
+<div id="score">Score: 0</div>
+
+<div id="game">
+    <div id="dino"></div>
+    <div id="cactus"></div>
+</div>
+
+<p>Press SPACE or tap screen</p>
+
+<script>
+let dino = document.getElementById("dino");
+let cactus = document.getElementById("cactus");
+let scoreEl = document.getElementById("score");
+
+let cactusX = 600;
+let speed = 6;
+let score = 0;
+
+// Jump
+function jump() {
+    if (!dino.classList.contains("jump")) {
+        dino.classList.add("jump");
+        setTimeout(() => dino.classList.remove("jump"), 500);
+    }
+}
+
+// Controls
+document.addEventListener("keydown", e => {
+    if (e.code === "Space") jump();
+});
+document.addEventListener("touchstart", jump);
+
+// Game loop
+setInterval(() => {
+    cactusX -= speed;
+    cactus.style.left = cactusX + "px";
+
+    if (cactusX < -20) {
+        cactusX = 600;
+        score++;
+        scoreEl.innerText = "Score: " + score;
+        if (score % 5 === 0) speed++;
+    }
+
+    let dinoBottom = parseInt(getComputedStyle(dino).bottom);
+
+    // COLLISION (SAFE ZONE)
+    if (cactusX < 90 && cactusX > 50 && dinoBottom < 40) {
+        alert("Game Over! Score: " + score);
+        location.reload();
+    }
+
+}, 20);
+</script>
+
+</body>
+</html>
